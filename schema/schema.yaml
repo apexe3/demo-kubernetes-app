@@ -1,0 +1,36 @@
+applicationApiVersion: v1beta1
+name: "vector-dashboard"
+description: ""
+properties:
+  namespace:
+    type: string
+    title: "Namespace"
+    required: true
+  keycloakAdmin:
+    type: string
+    title: "Keycloak Admin Username"
+    required: true
+  keycloakAdminPassword:
+    type: string
+    title: "Keycloak Admin Password"
+    required: true
+  postgresHost:
+    type: string
+    title: "PostgreSQL DB Host"
+    required: true
+  postgresKeycloakDB:
+    type: string
+    title: "PostgreSQL DB Name for Keycloak"
+    required: true
+  postgresUser:
+    type: string
+    title: "PostgreSQL User"
+    required: true
+  postgresPassword:
+    type: string
+    title: "PostgreSQL Password"
+    required: true
+  postgresPort:
+    type: string
+    title: "PostgreSQL Port"
+    required: true

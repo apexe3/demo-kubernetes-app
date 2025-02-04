@@ -1,0 +1,35 @@
+apiVersion: deployer.extensions.marketplace.cloud.google.com/v1alpha1
+kind: Deployer
+metadata:
+  name: vector-dashboard
+spec:
+  application:
+    name: vector-dashboard
+    version: "1.0.0"
+  clusterConstraints:
+    requireGKE: true
+  deployments:
+    - name: "Create Namespace"
+      kubernetes:
+        manifests:
+          - "configs/namespace.yml"
+    - name: "Set Secrets"
+      kubernetes:
+        manifests:
+          - "configs/secrets.yaml"
+    - name: "Configure Keycloak"
+      kubernetes:
+        manifests:
+          - "configs/keycloak.yml"
+    - name: "Configure Redis"
+      kubernetes:
+        manifests:
+          - "configs/redis.yml"
+    - name: "Configure Redis Commander"
+      kubernetes:
+        manifests:
+          - "configs/redis-commander.yml"
+    - name: "Configure Admin Auth Service"
+      kubernetes:
+        manifests:
+          - "deployments/apexe3-admins-authentication.yml"

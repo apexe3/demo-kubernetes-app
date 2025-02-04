@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apexe3-admins-authentication-deployment
+  namespace: { { .Values.namespace } }
+  labels:
+    app: apexe3-admins-authentication
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apexe3-admins-authentication
+  template:
+    metadata:
+      labels:
+        app: apexe3-admins-authentication
+    spec:
+      containers:
+        - name: apexe3-admins-authentication
+          image: europe-docker.pkg.dev/YOUR_PROJECT_ID/YOUR_REPOSITORY_NAME/admin-auth:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3020
+          env:
+            - name: PORT
+              value: "3020"
+            - name: MODE
+              value: "DEV"
+            - name: AUTH_SERVER_URL
+              value: "http://keycloak-internal"
+            - name: AUTH_REALM
+              value: admin-realm
+            - name: AUTH_CLIENT_ID
+              value: admin-client
+            - name: KEYCLOAK_ADMIN_REALM
+              value: master
+            - name: KEYCLOAK_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  key: KEYCLOAK_ADMIN
+                  name: keycloak-secrets
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: KEYCLOAK_ADMIN_PASSWORD
+                  name: keycloak-secrets
+            - name: KEYCLOAK_ADMIN_CLIENT_ID
+              value: postman-client
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: ""
+            - name: REDIS_PASSWORD
+              value: ""
+      imagePullSecrets:
+        - name: artifact-registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-service-apexe3-admins-authentication
+  namespace: { { .Values.namespace } }
+  labels:
+    app: apexe3-admins-authentication
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3020
+  selector:
+    app: apexe3-admins-authentication
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-service-apexe3-admins-authentication
+  namespace: { { .Values.namespace } }
+  labels:
+    app: apexe3-admins-authentication
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3020
+  selector:
+    app: apexe3-admins-authentication
+  type: LoadBalancer
